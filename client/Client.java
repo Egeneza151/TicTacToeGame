@@ -52,10 +52,13 @@ public class Client {
         setFrame(frame, out);
         receiveFromServer(in);
     	}catch(IOException e) {
-    		System.out.println("============");
-    		System.out.println("Why u did this to me :'-( ");
-    		e.printStackTrace();
-    		System.out.println("============");
+    		JOptionPane.showConfirmDialog(
+                    frame,
+                    "Thanks, this address not works or server is not running. \r\n I'm going to shut down. \r\n Have a nice day.",
+                    "You did it!",
+                    JOptionPane.OK_OPTION
+                    );
+    		System.exit(2137);
     	}
     }
 

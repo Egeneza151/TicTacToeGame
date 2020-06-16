@@ -28,7 +28,7 @@ public class TCPClient {
     public static void main(String argv[]) {
     	JFrame frame = new JFrame();
         int port = 2137;
-        String host = "localhost";
+        String host = null;
         
     	String s = (String)JOptionPane.showInputDialog(
                 frame,
@@ -36,6 +36,7 @@ public class TCPClient {
                 "Config mate",
                 JOptionPane.OK_CANCEL_OPTION
                 );
+    	if(s == null ) System.exit(0);
     	host = s;
     	System.out.print(s+" "+host);
     	
@@ -45,7 +46,7 @@ public class TCPClient {
         try {
             client.onClientStart();
         } catch (IOException e) {
-            System.out.println("SERVER NOT RESPONSE AT PORT: " + port+ " AND HOST: "+ host);
+         System.out.println("SERVER NOT RESPONSE AT PORT: " + port+ " AND HOST: "+ host);
         }
 
     }
