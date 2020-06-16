@@ -29,26 +29,24 @@ public class Client {
     private Square choosedSquare;
 
     private String h;
-    private int p;
     String choose;
     String otherChoose;
     String fontList[] = {"Comic Sans MS","Tahoma","Veranda","Courier","Helvetica","Monospaced","Onyx","Sathu"};
     int fontIndex = 0;
     
-    public Client(String host, int ip) {
+    public Client(String host) { //Konstruktor klasy
         this.h = host;
-        this.p = ip;
     }
 
-    public void onClientStart() throws IOException {
+    public void onClientStart() throws IOException { 
         connect();
     }
 
-    private void connect() throws IOException {
+    private void connect() throws IOException { //metoda laczaca do serwera
     	try {
-        Socket socket = new Socket("localhost", 2137);
-        out = new PrintWriter(socket.getOutputStream(), true);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        Socket socket = new Socket(h, 2137); //tworzenie polaczenia do serwera o adresie h i porcie 2137
+        out = new PrintWriter(socket.getOutputStream(), true); //strumien wyjscia "do serwera"
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); //strumien wejscia "od serwera"
         setFrame(frame, out);
         receiveFromServer(in);
     	}catch(IOException e) {
@@ -65,38 +63,42 @@ public class Client {
     private void receiveFromServer(BufferedReader in) throws IOException {
         String msg;
 
-        while (true) {
-            msg = in.readLine();
-            msg = decode(msg);
-            log(msg);
+        while (true) { //glowna petla pro
+            msg = in.readLine(); 
+            msg = decode(msg); //oodczytaj i zdekoduj wiadomosc
+            //log(msg);
             int mStart = 0;
             
-            mStart = msg.indexOf(";");
+            mStart = msg.indexOf(";"); 
             System.out.println(mStart);
             String mtemp;
-            if(mStart > 0)
+            
+            if(mStart > 0) //sprawdza czy wiadomosc ma argument rozdzielony znakiem ';' 
             	mtemp = msg.substring(0,mStart);
             else
             	mtemp = msg;
-            switch(mtemp) {
-            case "ACCEPT":  			m.setText("Opponent move"); choosedSquare.setText(choose); break;
-            case "OPPONENT_MOVE": 		int i = Integer.valueOf(msg.substring(14)); setBoard(i, otherChoose); m.setText("Your move"); frame.toFront();frame.requestFocusInWindow(); break;
-            case "OPONENT_DISCONECT":	m.setText("Other player disconnected - you win"); break;
-            case "MARK": 				choose = msg.substring(5); frame.setTitle("Mark - " + choose); otherChoose = choose.equals("X")?"O":"X"; break;
-            case "WIN":  				endGame = true; m.setText("You Win!!!"); break;
-            case "LOSE": 				endGame = true; m.setText("You Lose!!!"); break;
-            case "DRAW":  				endGame = true;m.setText("Tie"); break;
-            case "WAIT_FOR_OPPONENT": 	m.setText("Waiting for second player"); break;
-            case "OPPONENT_START": 		m.setText("Opponent starts"); break;
-            case "YOU_START": 			m.setText("You start"); break;
-            case "QUIT": 				return; 
-            case "INVALID_MESSAGE" : 	m.setText("INVALID_MESSAGE"); break;
+            
+            
+            switch(mtemp) {					//interpretacja komend od serwera
+            
+            case "ACCEPT":  			m.setText("Opponent move"); choosedSquare.setText(choose); break;    
+            case "OPPONENT_MOVE": 		int i = Integer.valueOf(msg.substring(14)); setBoard(i, otherChoose); m.setText("Your move"); frame.toFront();frame.requestFocusInWindow(); break; //ruch gracza
+            case "OPONENT_DISCONECT":	m.setText("Other player disconnected - you win"); break; //przeciwnik sie rozlaczyl = walkower
+            case "MARK": 				choose = msg.substring(5); frame.setTitle("Mark - " + choose); otherChoose = choose.equals("X")?"O":"X"; break; //zaznaczenie ruchu przeciwnika
+            case "WIN":  				endGame = true; m.setText("You Win!!!"); break; //wygrana
+            case "LOSE": 				endGame = true; m.setText("You Lose!!!"); break; //przegrana
+            case "DRAW":  				endGame = true;m.setText("Tie"); break; //remis
+            case "WAIT_FOR_OPPONENT": 	m.setText("Waiting for second player"); break; //oczekiwanie na gracza
+            case "OPPONENT_START": 		m.setText("Opponent starts"); break; //przeciwnik zaczyna gre
+            case "YOU_START": 			m.setText("You start"); break;  //gracz rozpoczyna
+            case "QUIT": 				return;  //wyjscie z programu
+            case "INVALID_MESSAGE" : 	m.setText("INVALID_MESSAGE"); break; //bledna komenda
             default: break;
             }
         }
     }
 
-    private void setFrame(JFrame frame, PrintWriter out) {
+    private void setFrame(JFrame frame, PrintWriter out) { //metoda kreujaca okno gry, dodaje eventListener do kazdego pola gry jaki do klawisza zmiany czcionki planszy
         m.setBackground(Color.DARK_GRAY);
         frame.getContentPane().add(m, "South");
 
@@ -137,12 +139,12 @@ public class Client {
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
@@ -150,27 +152,27 @@ public class Client {
     }
     
 
-    public void setBoard(int i, String mark) {
+    public void setBoard(int i, String mark) { //ustawia w danym polu znak X lub O
         board[i].setText(mark);
     }
 
-    public void log(String message) {
+    public void log(String message) {  //metoda drukujaca informacje do kosnoli 
         System.out.println(LocalTime.now() + " - " + message);
     }
 
 
-    public void sendToServer(String message) {
+    public void sendToServer(String message) { //metoda wysylajaca dane do serwera w formie "zakodowanej"
         out.println(message + "::");
     }
 
-    public String decode(String message) {
+    public String decode(String message) {  //metoda dekodujaca dane
         if (message.endsWith("::")) {
             return message.substring(0, message.length() - 2);
         }
         return "INVALID_MESSAGE";
     }
 
-    static class Square extends JPanel {
+    static class Square extends JPanel {   //glowna klasa pola gry
 		private static final long serialVersionUID = 1L;
 		JLabel label = new JLabel((Icon) null);
         Font font = new Font("Comic Sans MS", Font.BOLD, 50);

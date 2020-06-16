@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class Player extends Thread {
+public class Player extends Thread { //glowna klasa gracza
     private int gameId;
     private Socket socket;
     Player opponent;
@@ -16,7 +16,7 @@ public class Player extends Thread {
     private PrintWriter out;
     private InetAddress inetAddress;
 
-    public Player(Socket socket, Game game, String mark, int gameId) {
+    public Player(Socket socket, Game game, String mark, int gameId) { //konstruktor gracza po stronie serwera
         this.gameId = gameId;
         this.mark = mark;
         this.socket = socket;
@@ -34,7 +34,7 @@ public class Player extends Thread {
         }
     }
 
-    public void run() {
+    public void run() {  //metoda obslugujaca gracza od strony serwera, obsluga wiadomosci (danych) od i do gracza, weryfikacja tych danych 
         try {
             String message = null;
 //            out.println("START_GAME");
@@ -77,50 +77,50 @@ public class Player extends Thread {
     }
 
 
-    public void sendMessage(String message) {
+    public void sendMessage(String message) { //metoda wysylajaca dane do klienta
 //        out.println(message);
         sendToClient(message);
     }
 
-    public void oponentMove(int i) {
+    public void oponentMove(int i) {   //metoda wysylajaca ruch przeciwnika do klienta
         sendToClient("OPPONENT_MOVE;" + i);
     }
 
-    public void log(String message) {
+    public void log(String message) { //metoda drukujaca informacje do kosnoli
         System.out.println(LocalTime.now() + " " + message);
     }
 
-    public void setOpponent(Player opponent) {
+    public void setOpponent(Player opponent) { //metoda ustalajaca przeciwnika dla danej instancji klasy Player
         this.opponent = opponent;
     }
 
-    public void win() {
+    public void win() { //metoda odpowiedzialna za przekazanie informacji o wygranej gracza
         sendToClient("WIN");
         opponent.lose();
     }
 
-    public void draw() {
+    public void draw() {  //metoda odpowiedzialna za przekazanie informacji o remisie
         sendToClient("DRAW");
         opponent.sendToClient("DRAW");
     }
 
-    public void lose() {
+    public void lose() {//metoda odpowiedzialna za przekaanie informacji o przegranej gracza
         sendToClient("LOSE");
     }
 
-    public void youStart() {
+    public void youStart() {  //metoda odpowiedzialna za wyslanie informacji o rozpoczeciu gry przez gracza
         sendToClient("YOU_START");
     }
 
-    public void opponentStart() {
+    public void opponentStart() {//metoda odpowiedzialna za wyslanie informacji o rozpoczeciu gry przez przeciwnika
         sendToClient("OPPONENT_START");
     }
 
-    public void sendToClient(String message) {
+    public void sendToClient(String message) {  //metoda odpowiedzialna za wyslanie informacji do klienta w formie "zakodowanej"
         out.println(message + "::");
     }
 
-    public String decode(String message) {
+    public String decode(String message) { //metoda dekodujaca dane
         if (message.endsWith("::")) {
             return message.substring(0, message.length() - 2);
         }

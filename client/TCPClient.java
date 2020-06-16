@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class TCPClient {
 
 
-    public static String receve_all(BufferedReader in) throws IOException {
+    public static String receve_all(BufferedReader in) throws IOException {  //metoda odpowiedzialna za odebranie wszystkich danych od serwera
         boolean loop = true;
         StringBuilder sb = new StringBuilder(8096);
         while (loop) {
@@ -25,12 +25,12 @@ public class TCPClient {
         return sb.toString();
     }
 
-    public static void main(String argv[]) {
+    public static void main(String argv[]) { //glowna funkcja programu klienta, ustawienie zmiennych
     	JFrame frame = new JFrame();
         int port = 2137;
         String host = null;
         
-    	String s = (String)JOptionPane.showInputDialog(
+    	String s = (String)JOptionPane.showInputDialog( //wyswietlenie okna z prosba o wprowadzenie adresu serwera
                 frame,
                 "Enter server address: ",
                 "Config mate",
@@ -42,9 +42,9 @@ public class TCPClient {
     	
     	
 
-        Client client = new Client(host, port);
+        Client client = new Client(host); //utworzenie nowej instancji klasy Client z danymi
         try {
-            client.onClientStart();
+            client.onClientStart();     //uruchomienie instancji
         } catch (IOException e) {
          System.out.println("SERVER NOT RESPONSE AT PORT: " + port+ " AND HOST: "+ host);
         }
