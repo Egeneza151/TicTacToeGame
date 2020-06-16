@@ -96,7 +96,7 @@ public class Player extends Thread {
 
     public void win() {
         sendToClient("WIN");
-        opponent.loose();
+        opponent.lose();
     }
 
     public void draw() {
@@ -104,8 +104,8 @@ public class Player extends Thread {
         opponent.sendToClient("DRAW");
     }
 
-    public void loose() {
-        sendToClient("LOOSE");
+    public void lose() {
+        sendToClient("LOSE");
     }
 
     public void youStart() {

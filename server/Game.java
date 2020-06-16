@@ -71,6 +71,6 @@ public class Game {
 
     public void win(Player player) {
         player.win();
-        player.opponent.loose();
+        player.opponent.lose();
     }
 }
