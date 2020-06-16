@@ -41,14 +41,14 @@ public class Game {
 
     public boolean isWin() {
         return
-                (gamePool[0] != null && gamePool[0] == gamePool[1] && gamePool[0] == gamePool[2])
-                        || (gamePool[3] != null && gamePool[3] == gamePool[4] && gamePool[3] == gamePool[5])
-                        || (gamePool[6] != null && gamePool[6] == gamePool[7] && gamePool[6] == gamePool[8])
-                        || (gamePool[0] != null && gamePool[0] == gamePool[3] && gamePool[0] == gamePool[6])
-                        || (gamePool[1] != null && gamePool[1] == gamePool[4] && gamePool[1] == gamePool[7])
-                        || (gamePool[2] != null && gamePool[2] == gamePool[5] && gamePool[2] == gamePool[8])
-                        || (gamePool[0] != null && gamePool[0] == gamePool[4] && gamePool[0] == gamePool[8])
-                        || (gamePool[2] != null && gamePool[2] == gamePool[4] && gamePool[2] == gamePool[6]);
+                (			gamePool[0] != null && gamePool[0] == gamePool[1] && gamePool[0] == gamePool[2])  // -----
+                        || (gamePool[3] != null && gamePool[3] == gamePool[4] && gamePool[3] == gamePool[5])  // -----
+                        || (gamePool[6] != null && gamePool[6] == gamePool[7] && gamePool[6] == gamePool[8])  // -----
+                        || (gamePool[0] != null && gamePool[0] == gamePool[3] && gamePool[0] == gamePool[6])  // |
+                        || (gamePool[1] != null && gamePool[1] == gamePool[4] && gamePool[1] == gamePool[7])  // |
+                        || (gamePool[2] != null && gamePool[2] == gamePool[5] && gamePool[2] == gamePool[8])  // |
+                        || (gamePool[0] != null && gamePool[0] == gamePool[4] && gamePool[0] == gamePool[8])  // \
+                        || (gamePool[2] != null && gamePool[2] == gamePool[4] && gamePool[2] == gamePool[6]); // / 
     }
 
     public boolean isFiled() {

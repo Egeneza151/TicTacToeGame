@@ -26,8 +26,21 @@ public class TCPClient {
     }
 
     public static void main(String argv[]) {
-        int port = 222222;
+    	JFrame frame = new JFrame();
+        int port = 2137;
         String host = "localhost";
+        
+    	String s = (String)JOptionPane.showInputDialog(
+                frame,
+                "Enter server address: ",
+                "Config mate",
+                JOptionPane.OK_CANCEL_OPTION
+                );
+    	host = s;
+    	System.out.print(s+" "+host);
+    	
+    	
+
         Client client = new Client(host, port);
         try {
             client.onClientStart();
