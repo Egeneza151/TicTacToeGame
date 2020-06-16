@@ -40,7 +40,7 @@ public class Player extends Thread {
 //            out.println("START_GAME");
             sendToClient("START_GAME");
 //            out.println("MARK " + mark);
-            sendToClient("MARK " + mark);
+            sendToClient("MARK;" + mark);
             while (true) {
                 message = in.readLine();
                 message = decode(message);
@@ -49,9 +49,9 @@ public class Player extends Thread {
                 if (message.startsWith("MOVE")) {
                     int i = Integer.parseInt(message.substring(5));
                     if (i < 0 || i > 8) {
-                        sendToClient("INVALID MOVE");
+                        sendToClient("INVALID_MOVE");
                     } else if (!game.setMove(i, this)) {
-                        sendToClient("BAD MOVE");
+                        sendToClient("BAD_MOVE");
                     } else {
                         sendToClient("ACCEPT");
                         if (game.isWin()) {
@@ -83,7 +83,7 @@ public class Player extends Thread {
     }
 
     public void oponentMove(int i) {
-        sendToClient("OPPONENT_MOVE " + i);
+        sendToClient("OPPONENT_MOVE;" + i);
     }
 
     public void log(String message) {

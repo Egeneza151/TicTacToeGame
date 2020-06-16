@@ -15,29 +15,32 @@ import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Client {
-    private String host;
-    private int port;
+
     private boolean endGame = false;
-    String mark;
-    String opponentMark;
+    
     PrintWriter out;
 
     private JFrame frame = new JFrame("Tic Tac Toe");
-    private JLabel messageLabel = new JLabel("asdasdasd");
+    private JLabel m = new JLabel("asdasdasd");
 
     private Square[] board = new Square[9];
-    private Square currentSquare;
+    private Square choosedSquare;
 
+    private String h;
+    private int p;
+    String choose;
+    String otherChoose;
+    
     public Client(String host, int ip) {
-        this.host = host;
-        this.port = ip;
+        this.h = host;
+        this.p = ip;
     }
 
     public void onClientStart() throws IOException {
-        connectToServer();
+        connect();
     }
 
-    private void connectToServer() throws IOException {
+    private void connect() throws IOException {
         Socket socket = new Socket("localhost", 22222);
         out = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -53,51 +56,35 @@ public class Client {
             msg = in.readLine();
             msg = decode(msg);
             log(msg);
-
-            if (msg.endsWith("ACCEPT")) {
-                messageLabel.setText("Ruch przeciwnika");
-                currentSquare.setText(mark);
-            } else if (msg.startsWith("OPPONENT_MOVE")) {
-                int i = Integer.valueOf(msg.substring(14));
-                setBoard(i, opponentMark);
-                messageLabel.setText("Twoj ruch");
-            } else if (msg.startsWith("OPONENT_DISCONECT")) {
-                messageLabel.setText("Przeciwnik rozłączyl sie - Wygrales");
-            } else if (msg.startsWith("MARK")) {
-                mark = msg.substring(5);
-                frame.setTitle("Znacznik - " + mark);
-                if (mark.equals("X")) {
-                    opponentMark = "O";
-                } else {
-                    opponentMark = "X";
-                }
-            } else if (msg.startsWith("WIN")) {
-                endGame = true;
-                messageLabel.setText("Wygrales");
-            } else if (msg.startsWith("LOOSE")) {
-                endGame = true;
-                messageLabel.setText("Przegrales");
-            } else if (msg.startsWith("DRAW")) {
-                endGame = true;
-                messageLabel.setText("Remis");
-            } else if (msg.startsWith("WAIT_FOR_OPPONENT")) {
-                messageLabel.setText("Czekaj na przeciwnika");
-            } else if (msg.startsWith("YOU_START")) {
-                messageLabel.setText("Ty zaczynasz");
-            } else if (msg.startsWith("OPPONENT_START")) {
-                messageLabel.setText("Przeciwnik zaczyna");
-            } else if (msg.startsWith("INVALID_MESSAGE")) {
-                messageLabel.setText("INVALID_MESSAGE");
-            } else if (msg.equals("QUIT")) {
-                return;
+            int mStart = 0;
+            
+            mStart = msg.indexOf(";");
+            System.out.println(mStart);
+            String mtemp;
+            if(mStart > 0)
+            	mtemp = msg.substring(0,mStart);
+            else
+            	mtemp = msg;
+            switch(mtemp) {
+            case "ACCEPT":  			m.setText("Opponent move"); choosedSquare.setText(choose); break;
+            case "OPPONENT_MOVE": 		int i = Integer.valueOf(msg.substring(14)); setBoard(i, otherChoose); m.setText("Your move"); break;
+            case "OPONENT_DISCONECT":	m.setText("Other player disconnected - you win"); break;
+            case "MARK": 				choose = msg.substring(5); frame.setTitle("Mark - " + choose); otherChoose = choose.equals("X")?"O":"X"; break;
+            case "WIN":  				endGame = true; m.setText("You Win"); break;
+            case "LOOSE": 				endGame = true; m.setText("You Lose"); break;
+            case "DRAW":  				endGame = true;m.setText("Tie"); break;
+            case "WAIT_FOR_OPPONENT": 	m.setText("Waiting for second player"); break;
+            case "OPPONENT_START": 		m.setText("Opponent starts"); break;
+            case "YOU_START": 			m.setText("You start"); break;
+            case "QUIT": 				return; 
+            default: 					m.setText("INVALID_MESSAGE"); break;
             }
-
         }
     }
 
     private void setFrame(JFrame frame, PrintWriter out) {
-        messageLabel.setBackground(Color.lightGray);
-        frame.getContentPane().add(messageLabel, "South");
+        m.setBackground(Color.lightGray);
+        frame.getContentPane().add(m, "South");
 
         JPanel boardPanel = new JPanel();
         boardPanel.setBackground(Color.black);
@@ -107,10 +94,10 @@ public class Client {
             board[i] = new Square();
             board[i].addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
-                    currentSquare = board[j];
+                    choosedSquare = board[j];
                     if (endGame)
                         return;
-                    if (!currentSquare.isEmpty())
+                    if (!choosedSquare.isEmpty())
                         return;
 //                    out.println("MOVE " + j);
                     sendToServer("MOVE " + j);
