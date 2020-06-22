@@ -5,7 +5,7 @@ This folder contains source code of network implementation of TicTacToe game usi
 ## What's inside?
 - Source code
 - A lot of fun
-- some comments about code and
+- Some comments about code 
 
 
 ### How to start?
