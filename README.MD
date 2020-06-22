@@ -1,6 +1,6 @@
 # TicTacToe using Sockets in Java
 
-This folder contains source code of network implementation of TicTacToe game using Java.
+This repo contains source code of network implementation of TicTacToe game using Java.
 
 ## What's inside?
 - Source code
